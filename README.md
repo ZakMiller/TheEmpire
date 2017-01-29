@@ -1,2 +1,5 @@
-# TheEmpire ~~Strikes Back~~
-8====D~~~
+# TheEmpire
+### To start the server locally:
+``` sh
+  $ npm run watch
+```
