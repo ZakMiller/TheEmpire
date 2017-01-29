@@ -6,7 +6,7 @@ var username = prompt('enter your name');
 socket.on('incomingMessage', appendIncomingMessage);
 
 //return true or false if message meets criteria
-function isMessageValid(){
+function isMessageValid() {
 
 }
 

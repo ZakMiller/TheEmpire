@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "watch": "nodemon server.js",
+    "beautify": "glob-run js-beautify -r *.js && glob-run js-beautify -r public/scripts/*.js && glob-run js-beautify -r public/styles/*.css && glob-run js-beautify -r public/*.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,6 +15,8 @@
     "socket.io": "^1.7.2"
   },
   "devDependencies": {
+    "glob-run": "^0.1.6",
+    "js-beautify": "^1.6.8",
     "nodemon": "^1.11.0"
   }
 }
