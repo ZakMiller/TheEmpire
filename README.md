@@ -1,11 +1,16 @@
 # TheEmpire
 
-### To start the server and have it automatically restart on code changes:
+### Build scripts, start server, and automatically build and restart on changes:
 ``` sh
   $ npm run watch
 ```
 
-### To beautify all files:
+### Build scripts:
+``` sh
+  $ npm run build
+```
+
+### Beautify all files:
 ``` sh
   $ npm run beautify
 ```
