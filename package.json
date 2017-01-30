@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "watch": "nodemon server.js",
+    "watch": "nodemon server.js --ignore public",
     "beautify": "glob-run js-beautify -r *.js && glob-run js-beautify -r public/scripts/*.js && glob-run js-beautify -r public/styles/*.css && glob-run js-beautify -r public/*.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
