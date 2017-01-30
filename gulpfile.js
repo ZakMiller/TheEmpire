@@ -28,7 +28,9 @@ const globsToBeautify = [
 
 // Task implementations
 function beautify() {
-  return gulp.src(globsToBeautify, { base: './' })
+  return gulp.src(globsToBeautify, {
+      base: './'
+    })
     .pipe(prettify())
     .pipe(gulp.dest('./'));
 }

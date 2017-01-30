@@ -5,8 +5,6 @@ var username = prompt('enter your name');
 
 socket.on('incomingMessage', appendIncomingMessage);
 
-document.querySelector('button').addEventListener('click', sendMessage);
-
 //return true or false if message meets criteria
 function isMessageValid() {
 
@@ -28,3 +26,11 @@ function sendMessage() {
     message: inputText
   });
 }
+
+document.getElementById("input").addEventListener("keyup", function(event) {
+  event.preventDefault();
+  var ENTER_KEY = 13;
+  if (event.keyCode === ENTER_KEY) {
+    sendMessage();
+  }
+});
