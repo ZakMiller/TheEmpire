@@ -1,6 +1,6 @@
 # TheEmpire
 
-### To start the server locally:
+### To start the server and have it automatically restart on code changes:
 ``` sh
   $ npm run watch
 ```
