@@ -5,6 +5,8 @@ var username = prompt('enter your name');
 
 socket.on('incomingMessage', appendIncomingMessage);
 
+document.querySelector('button').addEventListener('click', sendMessage);
+
 //return true or false if message meets criteria
 function isMessageValid() {
 
