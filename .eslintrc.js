@@ -10,5 +10,8 @@ module.exports = {
   "plugins": [
     "standard",
     "promise"
-  ]
+  ],
+  "rules": {
+    "space-before-function-paren": ["error", "never"]
+  }
 };

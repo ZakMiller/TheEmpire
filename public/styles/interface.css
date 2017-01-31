@@ -9,7 +9,20 @@ body {
   padding: 25px;
   font-family: BIOS;
   background-color: black;
-  color: #72E26C
+  color: #72E26C;
+}
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #72E26C;
+  margin: 1em 0;
+  padding: 0;
+}
+
+#countdownBanner {
+  color: gold;
 }
 
 footer {
@@ -39,16 +52,19 @@ li {
 }
 
 input {
-  width: 90%;
-  height: 100%;
-  font-size: 15px;
   font-family: BIOS;
   background-color: black;
   color: #72E26C;
   border: none;
 }
 
-#prompt {
+#input {
+  width: 90%;
+  height: 100%;
+  font-size: 15px;
+}
+
+.prompt {
   width: 10%;
   font-size: 15px;
   padding: 10px;

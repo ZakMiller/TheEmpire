@@ -10,14 +10,28 @@
 </head>
 
 <body class="pulse">
-  <ul id='messages'></ul>
-  <footer>
-    <label id="prompt" for="input">&gt;</label><input id="input" autocomplete="off" autofocus/>
-    <audio id="mySound">
-      <!-- we can discuss changing sound -->
-      <source src="airhorn.mp3" type ="audio/mp3">
-    </audio>
-  </footer>
-</body>
+
+  <div id='registration' hidden>
+    <label class="prompt" for="input">username &gt;</label><input id='nameInput' autocomplete='off' />
+  </div>
+
+  <div id='lobby' hidden>
+    <p id='countdownBanner'></p>
+    <h2>Lobby</h2>
+    <ul id='lobbyList'></ul>
+  </div>
+
+  <div id='game' hidden>
+    <hr/>
+    <h1>Are you alive?</h1>
+    <hr/>
+    <ul id='messages'></ul>
+    <footer>
+      <label class="prompt" for="input">&gt;</label><input id="input" autocomplete="off" />
+      <audio id="errorSound">
+        <source src="airhorn.mp3" type ="audio/mp3">
+      </audio>
+    </footer>
+  </div>
 
 </html>
