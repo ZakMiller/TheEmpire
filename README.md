@@ -15,7 +15,7 @@
   ```
 
 ## Running tasks
-**note:** if any of these don't work, make sure you have fulp installed globally:
+**note:** if any of these don't work, make sure you have gulp installed globally:
 ``` sh
   $ npm install -g gulp
 ```
