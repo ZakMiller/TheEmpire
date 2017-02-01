@@ -1,3 +1,4 @@
+const os = require('os');
 const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const source = require('vinyl-source-stream');
@@ -28,15 +29,17 @@ const globsToBeautify = [
 
 // Task implementations
 function beautify() {
-  return gulp.src(globsToBeautify, {
+  gulp.src(globsToBeautify, {
       base: './'
     })
-    .pipe(prettify())
+    .pipe(prettify({
+      eol: os.EOL, // \r\n on Windows, \n on POSIX
+    }))
     .pipe(gulp.dest('./'));
 }
 
 function build() {
-  return browserify({
+  browserify({
       entries: ['public/scripts/main.js'],
       debug: true,
       extensions: ['js']
@@ -46,7 +49,8 @@ function build() {
     })
     .bundle()
     .on('error', err => {
-      console.error(err);
+      console.error(err.stack);
+      console.error('\nScroll up and fix your errors!');
     })
     .pipe(source('bundle.js'))
     .pipe(buffer())
