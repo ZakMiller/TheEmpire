@@ -2,16 +2,14 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="styles/interface.css">
+  <script defer src="bundle.js "></script>
 </head>
 
-<body>
+<body class="pulse">
   <ul id='messages'></ul>
+  <footer>
+    <label id="prompt" for="input">&gt;</label><input id="input" autocomplete="off" autofocus/>
+  </footer>
 </body>
-<footer>
-  <input id="input" autocomplete="off" autofocus/>
-</footer>
-
-<script defer src="/socket.io/socket.io.js"></script>
-<script defer src="bundle.js"></script>
 
 </html>
