@@ -11,8 +11,8 @@ function isMessageValid() {
 }
 
 document.querySelector('#input').addEventListener("input", function(event) {
-  if (this.value)
-    this.value = this.value.toLowerCase();
+  //need to create expression that alerts if invalid character is attempted
+  this.value = this.value.toLowerCase();
   this.value = this.value.replace(/[^a-z ]/g, "");
 });
 
