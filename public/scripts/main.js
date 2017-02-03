@@ -10,12 +10,11 @@ function isMessageValid() {
 
 }
 
- document.querySelector('#input').addEventListener("input", function(event){
-   if(this.value)
+document.querySelector('#input').addEventListener("input", function(event) {
+  if (this.value)
     this.value = this.value.toLowerCase();
-    this.value = this.value.replace(/[^a-z ]/g,"");
-  });
-
+  this.value = this.value.replace(/[^a-z ]/g, "");
+});
 
 function appendIncomingMessage(newMessage) {
   var item = document.createElement("li");
@@ -28,7 +27,6 @@ function sendMessage() {
   var inputText = document.getElementById('input').value;
   document.getElementById('input').value = '';
 
- 
   socket.emit('message', {
     name: username,
     message: inputText
