@@ -7,7 +7,9 @@ body {
   margin: 0 0 100px;
   /* bottom = footer height */
   padding: 25px;
+  font-family: BIOS;
   background-color: black;
+  color: #72E26C
 }
 
 footer {
@@ -30,19 +32,45 @@ ul {
   padding: 0;
   font-size: 15px;
   font-family: BIOS;
-  color: #72E26C;
+}
+
+li {
+  padding: 2px;
 }
 
 input {
-  width: 100%;
+  width: 90%;
   height: 100%;
   font-size: 15px;
   font-family: BIOS;
   background-color: black;
   color: #72E26C;
-  border-color: #72E26C;
+  border: none;
+}
+
+#prompt {
+  width: 10%;
+  font-size: 15px;
+  padding: 10px;
+  color: #72E26C;
 }
 
 input:focus {
   outline: none;
+}
+
+.pulse {
+  animation: pulse 3s linear infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
 }

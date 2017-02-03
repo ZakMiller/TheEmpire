@@ -1,6 +1,6 @@
 'use strict';
 
-var socket = io();
+const socket = require('socket.io-client')();
 var username = prompt('enter your name');
 
 socket.on('incomingMessage', appendIncomingMessage);
@@ -12,13 +12,13 @@ function isMessageValid() {
 
 document.querySelector('#input').addEventListener("input", function(event) {
   //need to create expression that alerts if invalid character is attempted
-  this.value = this.value.toLowerCase();
-  this.value = this.value.replace(/[^a-z ]/g, "");
+  this.value = this.value.toUpperCase();
+  this.value = this.value.replace(/[^A-Z ]/g, "");
 });
 
 function appendIncomingMessage(newMessage) {
   var item = document.createElement("li");
-  item.appendChild(document.createTextNode(newMessage.name + ':> ' + newMessage.message));
+  item.appendChild(document.createTextNode(`<${newMessage.name}> ${newMessage.message}`));
   document.getElementById('messages').appendChild(item);
 }
 
