@@ -39,10 +39,12 @@ input {
   font-size: 15px;
   font-family: BIOS;
   background-color: black;
+  color: #72E26C;
+  border-color: #72E26C;
 }
 
 input:focus {
   outline: none;
-  border-color: #72E26C;
-  color: #72E26C;
+  
+  
 }
