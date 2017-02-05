@@ -1,42 +1,31 @@
-const os = require('os');
-const gulp = require('gulp');
-const sourcemaps = require('gulp-sourcemaps');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
-const browserify = require('browserify');
-const babel = require('babelify');
-const nodemon = require('gulp-nodemon');
-const prettify = require('gulp-jsbeautifier');
+const gulp = require('gulp')
+const sourcemaps = require('gulp-sourcemaps')
+const source = require('vinyl-source-stream')
+const buffer = require('vinyl-buffer')
+const browserify = require('browserify')
+const babel = require('babelify')
+const nodemon = require('gulp-nodemon')
+const eslint = require('gulp-eslint')
 
 // Gulp Tasks
-gulp.task('beautify', beautify);
-gulp.task('build', build);
-gulp.task('watch', ['build'], watch);
+gulp.task('lint', lint)
+gulp.task('build', ['lint'], build)
+gulp.task('watch', ['build'], watch)
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['watch'])
 
 const globsToBuild = [
   'public/scripts/*.js'
-];
+]
 
-const globsToBeautify = [
-  '*.js',
-  'public/**/*.js',
-  'public/**/*.html',
-  'public/**/*.css',
-  '!public/bundle.js*' // don't beautify our bundled scripts
-];
-
-// Task implementations
-function beautify() {
-  gulp.src(globsToBeautify, {
-      base: './'
-    })
-    .pipe(prettify({
-      eol: os.EOL, // \r\n on Windows, \n on POSIX
+function lint() {
+  return gulp.src(['*.js', 'public/scripts/*.js'])
+    .pipe(eslint({
+      fix: true
     }))
-    .pipe(gulp.dest('./'));
-}
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError())
+};
 
 function build() {
   browserify({
@@ -49,8 +38,8 @@ function build() {
     })
     .bundle()
     .on('error', err => {
-      console.error(err.stack);
-      console.error('\nScroll up and fix your errors!');
+      console.error(err.stack)
+      console.error('\nScroll up and fix your errors!')
     })
     .pipe(source('bundle.js'))
     .pipe(buffer())
@@ -58,7 +47,7 @@ function build() {
       loadMaps: true
     }))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('public'));
+    .pipe(gulp.dest('public'))
 }
 
 function watch() {
@@ -67,9 +56,9 @@ function watch() {
     script: 'server.js',
     watch: ['*.js'],
     ext: 'js',
-    ignore: ['gulpfile.js', 'public/'],
-  });
+    ignore: ['gulpfile.js', 'public/']
+  })
 
   // re-transpile and rebundle scripts on frontend changes
-  gulp.watch(globsToBuild, ['build']);
+  gulp.watch(globsToBuild, ['build'])
 };
