@@ -2,11 +2,18 @@
 
 const socket = require('socket.io-client')()
 var username = prompt('enter your name')
-
+var sound1 = document.getElementById('mySound');
 socket.on('incomingMessage', appendIncomingMessage)
 
 document.querySelector('#input').addEventListener('input', function(event) {
   // need to create expression that alerts if invalid character is attempted
+  var letters = /[^A-Z,a-z]/;
+  if (this.value.match(letters)) {
+    sound1.play();
+    //alert('ONLY TYPE LETTERS');
+
+  }
+
   this.value = this.value.toUpperCase()
   this.value = this.value.replace(/[^A-Z ]/g, '')
 })
