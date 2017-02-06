@@ -61,7 +61,6 @@ input:focus {
 
 .pulse {
   animation: pulse 3s linear infinite;
-  filter: blur(0.6px);
 }
 
 @keyframes pulse {
