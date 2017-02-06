@@ -6,11 +6,11 @@ var sound1 = document.getElementById('mySound');
 socket.on('incomingMessage', appendIncomingMessage)
 
 document.querySelector('#input').addEventListener('input', function(event) {
-  // need to create expression that alerts if invalid character is attempted
-  var letters = /[^A-Z,a-z]/;
-  if (this.value.match(letters)) {
+  var nonLetters = /[^A-Z a-z]/;
+  if (this.value.match(nonLetters)) {
+    sound1.currentTime = 0;
     sound1.play();
-    //alert('ONLY TYPE LETTERS');
+    // need to add visual alert in to hud in future
 
   }
 
