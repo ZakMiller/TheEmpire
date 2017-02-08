@@ -5,11 +5,9 @@ const buffer = require('vinyl-buffer')
 const browserify = require('browserify')
 const babel = require('babelify')
 const nodemon = require('gulp-nodemon')
-const eslint = require('gulp-eslint')
 
 // Gulp Tasks
-gulp.task('lint', lint)
-gulp.task('build', ['lint'], build)
+gulp.task('build', build)
 gulp.task('watch', ['build'], watch)
 
 gulp.task('default', ['watch'])
@@ -18,21 +16,12 @@ const globsToBuild = [
   'public/scripts/*.js'
 ]
 
-function lint() {
-  return gulp.src(['*.js', 'public/scripts/*.js'])
-    .pipe(eslint({
-      fix: true
-    }))
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
-};
-
 function build() {
   browserify({
-      entries: ['public/scripts/main.js'],
-      debug: true,
-      extensions: ['js']
-    })
+    entries: ['public/scripts/main.js'],
+    debug: true,
+    extensions: ['js']
+  })
     .transform(babel, {
       presets: ['es2015']
     })
@@ -61,4 +50,4 @@ function watch() {
 
   // re-transpile and rebundle scripts on frontend changes
   gulp.watch(globsToBuild, ['build'])
-};
+}
