@@ -14,6 +14,21 @@
     $ npm install -g gulp
   ```
 
+4. Get Visual Studio Code Extensions ESLint and beautify.
+
+
+5. Add these to the VSCode settings.json file:
+``` json
+{
+    "editor.tabSize": 2,
+    "editor.renderWhitespace": "all",
+    "editor.formatOnSave": true,
+    "eslint.enable": true,
+    "eslint.run": "onSave",
+    "eslint.autoFixOnSave": true
+}
+```
+
 ## Running tasks
 **note:** if any of these don't work, make sure you have gulp installed globally:
 ``` sh
@@ -35,11 +50,6 @@ Our build flow is
 ### Build scripts:
 ``` sh
   $ gulp build
-```
-
-### Beautify all files:
-``` sh
-  $ gulp beautify
 ```
 
 ## Debugging Errors

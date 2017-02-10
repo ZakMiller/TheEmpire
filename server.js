@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 io.on('connection', handleSocketConnection)
 
-function handleSocketConnection (socket) {
+function handleSocketConnection(socket) {
   socket.on('message', (data) => {
     io.emit('incomingMessage', {
       name: data.name,

@@ -2,16 +2,15 @@
 
 const socket = require('socket.io-client')()
 var username = prompt('enter your name')
-var sound1 = document.getElementById('mySound');
+var sound1 = document.getElementById('mySound')
 socket.on('incomingMessage', appendIncomingMessage)
 
 document.querySelector('#input').addEventListener('input', function(event) {
-  var nonLetters = /[^A-Z a-z]/;
+  var nonLetters = /[^A-Z a-z]/
   if (this.value.match(nonLetters)) {
-    sound1.currentTime = 0;
-    sound1.play();
+    sound1.currentTime = 0
+    sound1.play()
     // need to add visual alert in to hud in future
-
   }
 
   this.value = this.value.toUpperCase()
