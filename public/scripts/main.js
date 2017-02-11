@@ -25,7 +25,7 @@ function enterKeyPressed(callback) {
 
 // Login State
 const loginHandler = (function loginIIFE() {
-  let username
+  let myUsername
   const nameInput = document.querySelector('#nameInput')
   const registration = document.querySelector('#registration')
   const lobby = document.querySelector('#lobby')
@@ -37,17 +37,17 @@ const loginHandler = (function loginIIFE() {
   // Event Listeners
   function updateLobby(usernames) {
     lobbyList.innerHTML = ''
-    usernames.forEach(name => {
+    usernames.forEach(username => {
       const listItem = document.createElement('li')
-      const text = (username === name) ? `> ${name}` : name
+      const text = (username === myUsername) ? `> ${username}` : username
       listItem.appendChild(document.createTextNode(text))
       lobbyList.appendChild(listItem)
     })
   }
 
   function register() {
-    username = document.querySelector('#nameInput').value
-    socket.emit('register', username, function handleRegisterError(err) {
+    myUsername = document.querySelector('#nameInput').value
+    socket.emit('register', myUsername, function handleRegisterError(err) {
       if (err) {
         alert(JSON.stringify(err)) // TODO: show error more elegantly
       } else {

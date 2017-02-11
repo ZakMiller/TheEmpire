@@ -70,7 +70,6 @@ function handleSocketConnection(socket) {
     if (users.has(socket.username)) {
       users.delete(socket.username)
       io.emit('lobbyUpdate', users.list())
-      console.log(users.list())
     }
   })
 }
