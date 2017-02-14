@@ -1,6 +1,8 @@
 'use strict'
 
 const socket = require('socket.io-client')()
+const requiredWords = require('./requiredWords')
+const roles = require('./roles')
 
 const ONE_SECOND = 1000
 
@@ -127,12 +129,23 @@ const gameHandler = (function gameIIFE() {
     })
   }
 
+  function displayRole(role) {
+    document.querySelector('#image').src = role.image
+    document.querySelector('#name').textContent = role.name
+    document.querySelector('#description').textContent = role.description
+  }
+
   // Transitions
   function onEnter() {
     socket.on('message', appendIncomingMessage)
     input.addEventListener('input', validateInput)
     input.addEventListener('keyup', enterKeyPressed(sendMessage))
     game.hidden = false
+    const STARTING_REQUIRED_WORD_COUNT = 10
+    requiredWords.addWords(STARTING_REQUIRED_WORD_COUNT)
+    const role = roles.GetHumanRole()
+    // const role = roles.GetAIRole()
+    displayRole(role)
     input.focus()
   }
 
