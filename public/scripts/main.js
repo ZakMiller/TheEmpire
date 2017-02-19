@@ -62,7 +62,7 @@ const loginHandler = (function loginIIFE() {
     clearTimeout(timeoutReference)
 
     if (delayInSeconds > 0) { // if we still have some time to count down
-      countdownBanner.innerText = `GAME WILL START IN ${delayInSeconds} SECONDS...`
+      countdownBanner.textContent = `GAME WILL START IN ${delayInSeconds} SECONDS...`
       timeoutReference = setTimeout(() => {
         countdown(delayInSeconds - 1)
       }, ONE_SECOND)
