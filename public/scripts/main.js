@@ -18,8 +18,7 @@ function changeState(stateName) {
 function enterKeyPressed(callback) {
   return function keyupEventListener(event) {
     event.preventDefault()
-    const ENTER_KEY = 13
-    if (event.keyCode === ENTER_KEY) {
+    if (event.key === 'Enter') {
       callback()
     }
   }
