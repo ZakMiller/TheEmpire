@@ -27,10 +27,10 @@ hr {
 
 footer {
   position: absolute;
-  left: 0;
+  left: 20%;
+  right: 20%;
   bottom: 0;
   height: 6%;
-  width: 100%;
   overflow: hidden;
 }
 
@@ -56,6 +56,43 @@ input {
   background-color: black;
   color: #72E26C;
   border: none;
+}
+
+#role {
+  float: left;
+  width: 20%;
+}
+
+#name {
+  display: flex;
+  justify-content: center;
+  font-size: 20px;
+  text-decoration: underline;
+}
+
+#image {
+  width: 100%;
+}
+
+#description {
+  font-size: 12px;
+}
+
+#messages {
+  float: left;
+  width: 60%;
+}
+
+#requiredWords {
+  float: right;
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  font-size: 16px;
+}
+
+#requiredWordsList {
+  color: red;
 }
 
 #input {

@@ -1,6 +1,8 @@
 'use strict'
 
 const socket = require('socket.io-client')()
+const requiredWords = require('./requiredWords')
+const roles = require('./roles')
 
 const ONE_SECOND = 1000
 
@@ -16,8 +18,7 @@ function changeState(stateName) {
 function enterKeyPressed(callback) {
   return function keyupEventListener(event) {
     event.preventDefault()
-    const ENTER_KEY = 13
-    if (event.keyCode === ENTER_KEY) {
+    if (event.key === 'Enter') {
       callback()
     }
   }
@@ -61,7 +62,7 @@ const loginHandler = (function loginIIFE() {
     clearTimeout(timeoutReference)
 
     if (delayInSeconds > 0) { // if we still have some time to count down
-      countdownBanner.innerText = `GAME WILL START IN ${delayInSeconds} SECONDS...`
+      countdownBanner.textContent = `GAME WILL START IN ${delayInSeconds} SECONDS...`
       timeoutReference = setTimeout(() => {
         countdown(delayInSeconds - 1)
       }, ONE_SECOND)
@@ -98,6 +99,9 @@ const gameHandler = (function gameIIFE() {
   const errorSound = document.querySelector('#errorSound')
   const input = document.querySelector('#input')
   const game = document.querySelector('#game')
+  const image = document.querySelector('#image')
+  const name = document.querySelector('#name')
+  const description = document.querySelector('#description')
 
   // Event Listeners
   function appendIncomingMessage(newMessage) {
@@ -127,12 +131,23 @@ const gameHandler = (function gameIIFE() {
     })
   }
 
+  function displayRole(role) {
+    image.src = role.image
+    name.textContent = role.name
+    description.textContent = role.description
+  }
+
   // Transitions
   function onEnter() {
     socket.on('message', appendIncomingMessage)
     input.addEventListener('input', validateInput)
     input.addEventListener('keyup', enterKeyPressed(sendMessage))
     game.hidden = false
+    const STARTING_REQUIRED_WORD_COUNT = 10
+    requiredWords.addWords(STARTING_REQUIRED_WORD_COUNT)
+    const role = roles.getHumanRole()
+    // const role = roles.getAIRole()
+    displayRole(role)
     input.focus()
   }
 
