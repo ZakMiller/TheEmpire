@@ -100,6 +100,9 @@ const gameHandler = (function gameIIFE() {
   const errorSound = document.querySelector('#errorSound')
   const input = document.querySelector('#input')
   const game = document.querySelector('#game')
+  const image = document.querySelector('#image')
+  const name = document.querySelector('#name')
+  const description = document.querySelector('#description')
 
   // Event Listeners
   function appendIncomingMessage(newMessage) {
@@ -130,9 +133,9 @@ const gameHandler = (function gameIIFE() {
   }
 
   function displayRole(role) {
-    document.querySelector('#image').src = role.image
-    document.querySelector('#name').textContent = role.name
-    document.querySelector('#description').textContent = role.description
+    image.src = role.image
+    name.textContent = role.name
+    description.textContent = role.description
   }
 
   // Transitions
@@ -143,8 +146,8 @@ const gameHandler = (function gameIIFE() {
     game.hidden = false
     const STARTING_REQUIRED_WORD_COUNT = 10
     requiredWords.addWords(STARTING_REQUIRED_WORD_COUNT)
-    const role = roles.GetHumanRole()
-    // const role = roles.GetAIRole()
+    const role = roles.getHumanRole()
+    // const role = roles.getAIRole()
     displayRole(role)
     input.focus()
   }
