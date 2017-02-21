@@ -28,10 +28,12 @@ io.on('connection', handleSocketConnection)
 function startGame() {
   console.log(`${currentRoom} will start a game in ${START_GAME_DELAY} sec`)
   clearTimeout(countDownTimer)
+
   countDownTimer = setTimeout(function startAGame() {
     if (users.count() >= MIN_PLAYER_COUNT) { // if nobody has left lobby
       io.to(currentRoom).emit('stateChange', 'game')
       console.log(`${currentRoom} started a game!`)
+      assignRoles(currentRoom)
       currentRoom = generateRoomName()
       users.clear()
       io.emit('lobbyUpdate', users.list())
@@ -73,7 +75,6 @@ function handleSocketConnection(socket) {
 
     if (users.count() >= MIN_PLAYER_COUNT) {
       startGame()
-      assignRoles(currentRoom)
     }
   })
 

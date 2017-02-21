@@ -134,8 +134,6 @@ const gameHandler = (function gameIIFE() {
     input.addEventListener('input', validateInput)
     input.addEventListener('keyup', enterKeyPressed(sendMessage))
     game.hidden = false
-    const STARTING_REQUIRED_WORD_COUNT = 10
-    requiredWords.addWords(STARTING_REQUIRED_WORD_COUNT)
     input.focus()
   }
 
@@ -161,6 +159,11 @@ function displayRole(role) {
   image.src = role.image
   name.textContent = role.name
   description.textContent = role.description
+
+  if (role.name === 'AI') {
+    const STARTING_REQUIRED_WORD_COUNT = 10
+    requiredWords.addWords(STARTING_REQUIRED_WORD_COUNT)
+  }
 }
 
 function setRole(roleName) {
