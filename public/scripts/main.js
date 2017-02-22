@@ -99,9 +99,6 @@ const gameHandler = (function gameIIFE() {
   const errorSound = document.querySelector('#errorSound')
   const input = document.querySelector('#input')
   const game = document.querySelector('#game')
-  const image = document.querySelector('#image')
-  const name = document.querySelector('#name')
-  const description = document.querySelector('#description')
 
   // Event Listeners
   function appendIncomingMessage(newMessage) {
@@ -131,23 +128,12 @@ const gameHandler = (function gameIIFE() {
     })
   }
 
-  function displayRole(role) {
-    image.src = role.image
-    name.textContent = role.name
-    description.textContent = role.description
-  }
-
   // Transitions
   function onEnter() {
     socket.on('message', appendIncomingMessage)
     input.addEventListener('input', validateInput)
     input.addEventListener('keyup', enterKeyPressed(sendMessage))
     game.hidden = false
-    const STARTING_REQUIRED_WORD_COUNT = 10
-    requiredWords.addWords(STARTING_REQUIRED_WORD_COUNT)
-    const role = roles.getHumanRole()
-    // const role = roles.getAIRole()
-    displayRole(role)
     input.focus()
   }
 
@@ -162,3 +148,25 @@ const gameHandler = (function gameIIFE() {
 })()
 
 stateManager.register('game', gameHandler)
+
+socket.on('setRole', setRole)
+
+function displayRole(role) {
+  const image = document.querySelector('#image')
+  const name = document.querySelector('#name')
+  const description = document.querySelector('#description')
+
+  image.src = role.image
+  name.textContent = role.name
+  description.textContent = role.description
+
+  if (role.name === 'AI') {
+    const STARTING_REQUIRED_WORD_COUNT = 10
+    requiredWords.addWords(STARTING_REQUIRED_WORD_COUNT)
+  }
+}
+
+function setRole(roleName) {
+  const role = roles.getRole(roleName)
+  displayRole(role)
+}

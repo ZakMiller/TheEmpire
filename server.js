@@ -25,6 +25,36 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 io.on('connection', handleSocketConnection)
 
+function startGame() {
+  console.log(`${currentRoom} will start a game in ${START_GAME_DELAY} sec`)
+  clearTimeout(countDownTimer)
+
+  countDownTimer = setTimeout(function startAGame() {
+    if (users.count() >= MIN_PLAYER_COUNT) { // if nobody has left lobby
+      io.to(currentRoom).emit('stateChange', 'game')
+      console.log(`${currentRoom} started a game!`)
+      assignRoles(currentRoom)
+      currentRoom = generateRoomName()
+      users.clear()
+      io.emit('lobbyUpdate', users.list())
+    }
+  }, START_GAME_DELAY * ONE_SECOND + DELAY_BUFFER_IN_MS)
+  io.to(currentRoom).emit('countdown', START_GAME_DELAY)
+}
+
+function assignRoles(currentRoom) {
+  io.in(currentRoom).clients((err, clients) => {
+    if (err) {
+      throw err
+    }
+    const playerCount = clients.length
+    const humanID = clients[Math.floor(Math.random() * playerCount)]
+    const human = io.sockets.connected[humanID]
+    human.to(currentRoom).broadcast.emit('setRole', 'AI')
+    human.emit('setRole', 'human')
+  })
+}
+
 function handleSocketConnection(socket) {
   socket.emit('stateChange', 'login')
   socket.emit('lobbyUpdate', users.list())
@@ -44,18 +74,7 @@ function handleSocketConnection(socket) {
     io.to(currentRoom).emit('lobbyUpdate', users.list())
 
     if (users.count() >= MIN_PLAYER_COUNT) {
-      console.log(`${currentRoom} will start a game in ${START_GAME_DELAY} sec`)
-      clearTimeout(countDownTimer)
-      countDownTimer = setTimeout(function startAGame() {
-        if (users.count() >= MIN_PLAYER_COUNT) { // if nobody has left lobby
-          io.to(currentRoom).emit('stateChange', 'game')
-          console.log(`${currentRoom} started a game!`)
-          currentRoom = generateRoomName()
-          users.clear()
-          io.emit('lobbyUpdate', users.list())
-        }
-      }, START_GAME_DELAY * ONE_SECOND + DELAY_BUFFER_IN_MS)
-      io.to(currentRoom).emit('countdown', START_GAME_DELAY)
+      startGame()
     }
   })
 
