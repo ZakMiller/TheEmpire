@@ -13,6 +13,8 @@ const name = document.querySelector('#name')
 const description = document.querySelector('#description')
 const messages = document.querySelector('#messages')
 
+const SENTENCE_WORD_COUNT = 10
+
 // Event Listeners
 function appendIncomingMessage(newMessage) {
   const item = document.createElement('li')
@@ -29,22 +31,18 @@ function displayRole(role) {
   image.src = role.image
   name.textContent = role.name
   description.textContent = role.description
+}
 
-  const SENTENCE_WORD_COUNT = 10
-  let randomWordList = []
-
-  if (role.name === 'AI') {
-    socket.emit('fetchRequiredWords', function requiredWordsCallback(wordList) {
-      randomWordList = wordList
-      requiredWords.addWords(randomWordList)
-      // randomWordList will be empty unless AI
-      input.enable(SENTENCE_WORD_COUNT, randomWordList)
-    })
-  }
+function handleNewWordList(wordList = []) {
+  let randomWordList = wordList
+  requiredWords.addWords(randomWordList) // randomWordList will be empty unless AI
+  input.disable()
+  input.enable(SENTENCE_WORD_COUNT, randomWordList)
 }
 
 // Transitions
 function onEnter() {
+  socket.on('assignWords', handleNewWordList)
   socket.on('message', appendIncomingMessage)
   socket.on('setRole', setRole)
   game.hidden = false

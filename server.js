@@ -58,9 +58,17 @@ function assignRoles(currentRoom) {
     }
     const playerCount = clients.length
     const humanID = clients[Math.floor(Math.random() * playerCount)]
-    const human = io.sockets.connected[humanID]
-    human.to(currentRoom).broadcast.emit('setRole', 'AI')
-    human.emit('setRole', 'human')
+    clients.forEach(clientId => {
+      const client = io.sockets.connected[clientId]
+      if (clientId === humanID) {
+        client.emit('setRole', 'human')
+        client.emit('assignWords', [])
+      } else {
+        client.emit('setRole', 'AI')
+        client.wordList = []
+        client.emit('assignWords', assignWordListFor(client))
+      }
+    })
   })
 }
 
@@ -96,15 +104,11 @@ function handleSocketConnection(socket) {
         name: socket.username,
         message
       })
+      // give the client another list of words
+      socket.emit('assignWords', assignWordListFor(socket))
     } else {
       cb('Invalid Sentence')
     }
-  })
-
-  socket.on('fetchRequiredWords', function wordListHandler(cb) {
-    const wordList = generateWords(STARTING_REQUIRED_WORD_COUNT)
-    socket.wordList = wordList
-    return cb(wordList)
   })
 
   socket.on('spellCheck', function spellChecker(word, cb) {
@@ -141,4 +145,14 @@ function sentenceIsValid(sentence, wordList = []) {
   }
 
   return !wordList.length || keywordCount >= REQUIRED_KEYWORD_COUNT
+}
+
+function assignWordListFor(socket) {
+  if (socket.wordList) {
+    const wordList = generateWords(STARTING_REQUIRED_WORD_COUNT)
+    socket.wordList = wordList
+    return wordList
+  } else {
+    return []
+  }
 }
