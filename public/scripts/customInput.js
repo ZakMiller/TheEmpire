@@ -71,11 +71,15 @@ function classifyWord() {
   currentWord.className = 'word'
   if (wordSet.has(currentText)) {
     currentWord.classList.add('error')
+  } else if (RANDOM_WORDS.includes(currentText)) {
+    currentWord.classList.add('keyword')
+    toggleMarkForWord(currentText)
   } else {
-    if (RANDOM_WORDS.includes(currentText)) {
-      currentWord.classList.add('keyword')
-      toggleMarkForWord(currentText)
-    }
+    socket.emit('spellCheck', currentText, function spellCheckCallback(isValid) {
+      if (!isValid) {
+        currentWord.classList.add('error')
+      }
+    })
   }
 }
 

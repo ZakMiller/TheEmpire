@@ -5,16 +5,19 @@ const path = require('path')
 const app = express()
 const httpServer = require('http').createServer(app)
 const io = require('socket.io')(httpServer)
+const dictionary = require('check-word')('en')
 
 const users = require('./users')
 const {
   generateRoomName
 } = require('./rooms')
 
-const MIN_PLAYER_COUNT = 3
-const START_GAME_DELAY = 5 // sec
+const MIN_PLAYER_COUNT = 1
+const START_GAME_DELAY = 1 // sec
 const ONE_SECOND = 1000
 const DELAY_BUFFER_IN_MS = 200
+
+const EXTRA_VALID_WORDS_REGEXP = /^[ai]$/
 
 let currentRoom = generateRoomName()
 let countDownTimer = null
@@ -59,7 +62,7 @@ function handleSocketConnection(socket) {
   socket.emit('stateChange', 'login')
   socket.emit('lobbyUpdate', users.list())
 
-  socket.on('register', (username, cb) => {
+  socket.on('register', function register(username, cb) {
     if (!username) {
       return cb('username must not be empty')
     }
@@ -78,14 +81,19 @@ function handleSocketConnection(socket) {
     }
   })
 
-  socket.on('message', data => {
+  socket.on('message', function messageHandler(data) {
     io.to(socket.gameRoom).emit('message', {
       name: socket.username,
       message: data.message
     })
   })
 
-  socket.on('disconnect', () => {
+  socket.on('spellCheck', function spellChecker(word, cb) {
+    word = word.toLowerCase()
+    cb(EXTRA_VALID_WORDS_REGEXP.test(word) || dictionary.check(word))
+  })
+
+  socket.on('disconnect', function disconnect() {
     if (users.has(socket.username)) {
       users.delete(socket.username)
       io.emit('lobbyUpdate', users.list())
