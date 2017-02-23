@@ -9,6 +9,9 @@ const dictionary = require('check-word')('en')
 
 const users = require('./users')
 const {
+  generateWords
+} = require('./randomWords')
+const {
   generateRoomName
 } = require('./rooms')
 
@@ -16,6 +19,9 @@ const MIN_PLAYER_COUNT = 1
 const START_GAME_DELAY = 1 // sec
 const ONE_SECOND = 1000
 const DELAY_BUFFER_IN_MS = 200
+const STARTING_REQUIRED_WORD_COUNT = 10
+const REQUIRED_SENTENCE_LENGTH = 10
+const REQUIRED_KEYWORD_COUNT = 3
 
 const EXTRA_VALID_WORDS_REGEXP = /^[ai]$/
 
@@ -81,11 +87,24 @@ function handleSocketConnection(socket) {
     }
   })
 
-  socket.on('message', function messageHandler(data) {
-    io.to(socket.gameRoom).emit('message', {
-      name: socket.username,
-      message: data.message
-    })
+  socket.on('message', function messageHandler({
+    message
+  }, cb) {
+    if (sentenceIsValid(message, socket.wordList)) {
+      cb(null)
+      io.to(socket.gameRoom).emit('message', {
+        name: socket.username,
+        message
+      })
+    } else {
+      cb('Invalid Sentence')
+    }
+  })
+
+  socket.on('fetchRequiredWords', function wordListHandler(cb) {
+    const wordList = generateWords(STARTING_REQUIRED_WORD_COUNT)
+    socket.wordList = wordList
+    return cb(wordList)
   })
 
   socket.on('spellCheck', function spellChecker(word, cb) {
@@ -99,4 +118,27 @@ function handleSocketConnection(socket) {
       io.emit('lobbyUpdate', users.list())
     }
   })
+}
+
+function sentenceIsValid(sentence, wordList = []) {
+  const words = sentence.split(' ')
+  if (words.length !== REQUIRED_SENTENCE_LENGTH) {
+    return false
+  }
+
+  const wordSet = new Set()
+  let keywordCount = 0
+  for (let i = 0; i !== words.length; ++i) {
+    const currentWord = words[i]
+    if (wordSet.has(currentWord)) {
+      return false
+    } else {
+      wordSet.add(currentWord)
+      if (wordList.includes(currentWord)) {
+        ++keywordCount
+      }
+    }
+  }
+
+  return !wordList.length || keywordCount >= REQUIRED_KEYWORD_COUNT
 }

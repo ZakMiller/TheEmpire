@@ -34,13 +34,13 @@ function displayRole(role) {
   let randomWordList = []
 
   if (role.name === 'AI') {
-    const STARTING_REQUIRED_WORD_COUNT = 10
-    randomWordList = requiredWords.generateWords(STARTING_REQUIRED_WORD_COUNT)
-    requiredWords.addWords(randomWordList)
+    socket.emit('fetchRequiredWords', function requiredWordsCallback(wordList) {
+      randomWordList = wordList
+      requiredWords.addWords(randomWordList)
+      // randomWordList will be empty unless AI
+      input.enable(SENTENCE_WORD_COUNT, randomWordList)
+    })
   }
-
-  // randomWordList will be empty unless AI
-  input.enable(SENTENCE_WORD_COUNT, randomWordList)
 }
 
 // Transitions

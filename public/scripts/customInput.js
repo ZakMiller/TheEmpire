@@ -22,7 +22,7 @@ let currentWord
 const wordSet = new Set()
 let RANDOM_WORDS
 let WORD_COUNT
-const FRACTION_REQUIRED_TO_BE_RANDOM = 0.50
+const REQUIRED_KEYWORD_COUNT = 3
 
 function keydownListener(event) {
   const key = event.key.toUpperCase()
@@ -117,7 +117,6 @@ function handleBackspace() {
       if (!lastWord.classList.contains('error')) {
         wordSet.delete(lastWord.innerText)
       }
-      console.log(wordSet)
     }
   } else {
     toggleMarkForWord(currentWord.innerText)
@@ -157,19 +156,22 @@ function handleEnter() {
     return
   }
 
-  // check that our sentence contains at least 25% of the required words
-  const NUM_REQUIRED_KEYWORD = Math.ceil(RANDOM_WORDS.length * FRACTION_REQUIRED_TO_BE_RANDOM)
-  if (keywordCount < NUM_REQUIRED_KEYWORD) {
-    alert(`sentence must include ${NUM_REQUIRED_KEYWORD} required words`) // TODO better warning
+  // check for the min number of required keyword, if applicable
+  if (RANDOM_WORDS.length && keywordCount < REQUIRED_KEYWORD_COUNT) {
+    alert(`sentence must include ${REQUIRED_KEYWORD_COUNT} required words`) // TODO better warning
     return
   }
 
   socket.emit('message', {
     message: wordArray.join(' ')
+  }, function handleValidationError(err) {
+    if (err) {
+      alert(err) // TODO better warning
+    } else {
+      resetWords()
+      wordSet.clear()
+    }
   })
-
-  resetWords()
-  wordSet.clear()
 }
 
 // TODO add visual alert in to hud in future
