@@ -15,8 +15,8 @@ const {
   generateRoomName
 } = require('./rooms')
 
-const MIN_PLAYER_COUNT = 1
-const START_GAME_DELAY = 1 // sec
+const MIN_PLAYER_COUNT = 3
+const START_GAME_DELAY = 5 // sec
 const ONE_SECOND = 1000
 const DELAY_BUFFER_IN_MS = 200
 const STARTING_REQUIRED_WORD_COUNT = 10
