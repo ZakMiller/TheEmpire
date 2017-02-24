@@ -7,12 +7,15 @@
   <title>Are you alive?</title>
   <link rel="stylesheet" type="text/css" href="styles/interface.css">
   <script defer src="bundle.js "></script>
+  <audio id="errorSound">
+    <source src="warn_sound.wav" type ="audio/wav">
+  </audio>
 </head>
 
 <body class="pulse">
 
   <div id='registration' hidden>
-    <label class="prompt" for="input">username &gt;</label><input id='nameInput' autocomplete='off' />
+    <span class="prompt">USERNAME &gt; </span><input id='nameInput' autocomplete='off' />
   </div>
 
   <div id='lobby' hidden>
@@ -22,8 +25,10 @@
   </div>
 
   <div id='game' hidden>
-    <hr/>
     <h1>Are you alive?</h1>
+    <hr/>
+    <h2>Players</h2>
+    <ul id='playerList'></ul>
     <hr/>
     <div id='display'>
 
@@ -41,12 +46,11 @@
     </div>
 
     <footer>
-      <label class="prompt" for="input">&gt;</label><input id="input" autocomplete="off" />
-      <audio id="errorSound">
-        <source src="airhorn.mp3" type ="audio/mp3">
-      </audio>
+      <p id='wordCounter'></p>
+      <span id='customInput'></span>
     </footer>
   </div>
+
 </body>
 
 </html>
