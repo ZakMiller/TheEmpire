@@ -6,7 +6,7 @@ const {
 const requiredWords = require('./requiredWords')
 
 const roles = require('./roles')
-const input = require('./customInput')
+const input = require('./sentenceBuilder')
 
 const game = document.querySelector('#game')
 const image = document.querySelector('#image')
@@ -44,7 +44,6 @@ function displayRole(role) {
 }
 
 function showIsActivePlayer(activePlayer) {
-  const playerListArray = Array.from(playerList.childNodes)
   const players = Array.from(playerList.querySelectorAll('li'))
 
   for (let player of players) {

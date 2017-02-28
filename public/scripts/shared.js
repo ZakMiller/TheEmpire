@@ -17,7 +17,6 @@ module.exports = {
   // Shared Helper Functions
   keyListener(key, callback) {
     return function keyEventListener(event) {
-      console.log(`'${event.key}'`)
       if (event.key === key) {
         event.preventDefault()
         callback()
