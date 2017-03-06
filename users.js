@@ -1,29 +1,73 @@
 'use strict'
 
-const names = new Set()
+// const names = new Set()
+let names = []
+const votes = {}
 
 module.exports = {
-  add(name) {
-    names.add(name)
+  add(name, id) {
+    const element = {
+      name: name,
+      id: id
+    }
+    names.push(element)
+    // votes = 0
   },
 
   delete(name) {
-    return names.delete(name)
+    const deleted = names.filter(function(element) {
+      return element.name !== name
+    })
+    names = deleted
   },
 
   has(name) {
-    return names.has(name)
+    for (let i = 0; i < names.length; i++) {
+      if (names[i].name === name) {
+        return true
+      }
+    }
+    return false
   },
 
   list() {
-    return Array.from(names)
+    return names
+  },
+
+  names() {
+    return names.map(function(element) {
+      return element.name
+    })
   },
 
   count() {
-    return names.size
+    return names.length
   },
 
   clear() {
-    return names.clear()
+    names = []
+  },
+
+  getNameFromID(id) {
+    const userWithID = names.filter(function(element) {
+      return element.id === id
+    })
+    return userWithID[0].name
+  },
+
+  vote(name) {
+    // votes[name] += 1
+  },
+
+  getMostVoted() {
+    // let mostVotes = 0
+    // let mostVoted
+    // for (let i = 0; i < names.length; i++) {
+    // if (names[i].votes > mostVotes) {
+    //  mostVotes = votes[i]
+    //  mostVoted = names[i]
+    //   }
+    //  }
+    // / return mostVoted
   }
 }
