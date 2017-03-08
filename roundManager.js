@@ -67,7 +67,7 @@ module.exports = {
         state = 'chat'
         client.emit('progressGame', 'chat', round, activePlayer)
       } else {
-        if (containsObject(clientId, clientsLeft)) {
+        if (clientsLeft.includes(clientId)) {
           client.emit('progressGame', 'wait', round, activePlayer)
         } else {
           // Done for the round.

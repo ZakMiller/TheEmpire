@@ -115,14 +115,14 @@ function handleBackspace() {
       words.removeChild(currentWord)
       currentWord = lastWord
       if (!lastWord.classList.contains('error')) {
-        wordSet.delete(lastWord.innerText)
+        wordSet.delete(lastWord.textContent)
       }
     }
   } else {
-    toggleMarkForWord(currentWord.innerText)
+    toggleMarkForWord(currentWord.textContent)
     currentWord.textContent = currentWord.textContent.substr(0, currentWord.textContent.length - 1)
     classifyWord()
-    toggleMarkForWord(currentWord.innerText)
+    toggleMarkForWord(currentWord.textContent)
   }
 }
 
@@ -140,9 +140,9 @@ function handleEnter() {
     if (typedWord.classList.contains('keyword')) {
       ++keywordCount
     }
-    const text = typedWords[i].innerText
+    const text = typedWords[i].textContent
     if (text) {
-      wordArray.push(typedWords[i].innerText)
+      wordArray.push(typedWords[i].textContent)
     }
   }
 

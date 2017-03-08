@@ -45,14 +45,13 @@ function displayRole(role) {
 
 function showIsActivePlayer(activePlayer) {
   const playerListArray = Array.from(playerList.childNodes)
-  const players = playerListArray.filter(function(node) {
-    return node.nodeName === 'LI'
-  })
+  const players = Array.from(playerList.querySelectorAll('li'))
+
   for (let player of players) {
-    if (player.innerText === activePlayer) {
-      player.innerText = '> ' + activePlayer
-    } else if (player.innerText.substring(0, 2) === '> ') {
-      player.innerText = player.innerText.substring(2)
+    if (player.textContent === activePlayer) {
+      player.textContent = '> ' + activePlayer
+    } else if (player.textContent.substring(0, 2) === '> ') {
+      player.textContent = player.textContent.substring(2)
     }
   }
 }
@@ -60,24 +59,30 @@ function showIsActivePlayer(activePlayer) {
 function progressGame(newJob, roundCount, activePlayer) {
   roundCounter.textContent = `ROUND ${roundCount}`
   showIsActivePlayer(activePlayer)
-  if (newJob === 'chat') {
-    wordCounter.hidden = false
-    customInput.hidden = false
-    requiredWordsList.hidden = false
-    alert('your turn!')
-  } else if (newJob === 'wait') {
-    wordCounter.hidden = false
-    customInput.hidden = false
-    requiredWordsList.hidden = false
-    alert(activePlayer + "'s turn")
-  } else if (newJob === 'vote') {
-    alert('vote!')
-  } else if (newJob === 'done') {
-    wordCounter.hidden = true
-    customInput.hidden = true
-    requiredWordsList.hidden = true
-  } else if (newJob === 'end') {
-    alert('THE END!')
+  switch (newJob) {
+    case 'chat':
+      wordCounter.hidden = false
+      customInput.hidden = false
+      requiredWordsList.hidden = false
+      alert('your turn!')
+      break
+    case 'wait':
+      wordCounter.hidden = false
+      customInput.hidden = false
+      requiredWordsList.hidden = false
+      alert(activePlayer + "'s turn")
+      break
+    case 'vote':
+      alert('vote!')
+      break
+    case 'done':
+      wordCounter.hidden = true
+      customInput.hidden = true
+      requiredWordsList.hidden = true
+      break
+    case 'end':
+      alert('THE END!')
+      break
   }
 }
 
