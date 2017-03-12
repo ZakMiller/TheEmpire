@@ -14,6 +14,7 @@ const {
 const {
   generateRoomName
 } = require('./rooms')
+const roundManager = require('./roundManager')
 
 const MIN_PLAYER_COUNT = 3
 const START_GAME_DELAY = 5 // sec
@@ -27,6 +28,8 @@ const EXTRA_VALID_WORDS_REGEXP = /^[ai]$/
 
 let currentRoom = generateRoomName()
 let countDownTimer = null
+let votesNeeded
+let playerCount
 
 httpServer.listen(80)
 
@@ -42,10 +45,11 @@ function startGame() {
     if (users.count() >= MIN_PLAYER_COUNT) { // if nobody has left lobby
       io.to(currentRoom).emit('stateChange', 'game')
       console.log(`${currentRoom} started a game!`)
+
       assignRoles(currentRoom)
+
+      roundManager.start(io, currentRoom, users)
       currentRoom = generateRoomName()
-      users.clear()
-      io.emit('lobbyUpdate', users.list())
     }
   }, START_GAME_DELAY * ONE_SECOND + DELAY_BUFFER_IN_MS)
   io.to(currentRoom).emit('countdown', START_GAME_DELAY)
@@ -56,7 +60,9 @@ function assignRoles(currentRoom) {
     if (err) {
       throw err
     }
+
     const playerCount = clients.length
+
     const humanID = clients[Math.floor(Math.random() * playerCount)]
     clients.forEach(clientId => {
       const client = io.sockets.connected[clientId]
@@ -74,7 +80,7 @@ function assignRoles(currentRoom) {
 
 function handleSocketConnection(socket) {
   socket.emit('stateChange', 'login')
-  socket.emit('lobbyUpdate', users.list())
+  socket.emit('lobbyUpdate', users.names())
 
   socket.on('register', function register(username, cb) {
     if (!username) {
@@ -85,20 +91,22 @@ function handleSocketConnection(socket) {
     }
     socket.username = username
     socket.gameRoom = currentRoom
-    users.add(username)
+    users.add(username, socket.id)
     socket.join(currentRoom)
     cb(null) // signal success
-    io.to(currentRoom).emit('lobbyUpdate', users.list())
+    io.to(currentRoom).emit('lobbyUpdate', users.names())
 
     if (users.count() >= MIN_PLAYER_COUNT) {
       startGame()
+      votesNeeded = users.count()
+      playerCount = users.count()
     }
   })
 
   socket.on('message', function messageHandler({
     message
   }, cb) {
-    if (sentenceIsValid(message, socket.wordList)) {
+    if (sentenceIsValid(message, socket.wordList) && socket.id === roundManager.activePlayerID) {
       cb(null)
       io.to(socket.gameRoom).emit('message', {
         name: socket.username,
@@ -106,6 +114,7 @@ function handleSocketConnection(socket) {
       })
       // give the client another list of words
       socket.emit('assignWords', assignWordListFor(socket))
+      roundManager.continueChat(users)
     } else {
       cb('Invalid Sentence')
     }
@@ -116,10 +125,21 @@ function handleSocketConnection(socket) {
     cb(EXTRA_VALID_WORDS_REGEXP.test(word) || dictionary.check(word))
   })
 
+  socket.on('vote', function tallyVote(vote) {
+    if (roundManager.state === 'vote') {
+      users.vote(vote)
+      votesNeeded--
+      if (votesNeeded === 0) {
+        votesNeeded = playerCount
+        roundManager.nextRound(users)
+      }
+    }
+  })
+
   socket.on('disconnect', function disconnect() {
     if (users.has(socket.username)) {
       users.delete(socket.username)
-      io.emit('lobbyUpdate', users.list())
+      io.emit('lobbyUpdate', users.names())
     }
   })
 }

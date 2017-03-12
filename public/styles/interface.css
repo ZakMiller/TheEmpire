@@ -101,6 +101,10 @@ input {
   font-size: 15px;
 }
 
+.myName {
+  color: gold;
+}
+
 .words {
   display: inline;
   list-style-type: none;

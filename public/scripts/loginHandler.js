@@ -21,8 +21,10 @@ function updateLobby(usernames) {
   lobbyList.innerHTML = ''
   usernames.forEach(username => {
     const listItem = document.createElement('li')
-    const text = (username === myUsername) ? `> ${username}` : username
-    listItem.appendChild(document.createTextNode(text))
+    if (username === myUsername) {
+      listItem.classList.add('myName')
+    }
+    listItem.appendChild(document.createTextNode(username))
     lobbyList.appendChild(listItem)
   })
 }
