@@ -1,33 +1,24 @@
 'use strict'
 
 // const names = new Set()
-let names = []
+let names = {}
 const votes = {}
 
 module.exports = {
   add(name, id) {
-    const element = {
-      name: name,
+    names[name] = {
       id: id
     }
-    names.push(element)
     // votes = 0
   },
 
   delete(name) {
-    const deleted = names.filter(function(element) {
-      return element.name !== name
-    })
-    names = deleted
+    delete names[name]
   },
 
   has(name) {
-    for (let i = 0; i < names.length; i++) {
-      if (names[i].name === name) {
-        return true
-      }
-    }
-    return false
+    return names.hasOwnProperty(name)
+    // do stuff
   },
 
   list() {
@@ -35,24 +26,23 @@ module.exports = {
   },
 
   names() {
-    return names.map(function(element) {
-      return element.name
-    })
+    return Object.keys(names)
   },
 
   count() {
-    return names.length
+    return Object.keys(names).length
   },
 
   clear() {
-    names = []
+    names = {}
   },
 
   getNameFromID(id) {
-    const userWithID = names.filter(function(element) {
-      return element.id === id
-    })
-    return userWithID[0].name
+    for (var name in names) {
+      if (names[name].id === id) {
+        return name
+      }
+    }
   },
 
   vote(name) {

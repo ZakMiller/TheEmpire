@@ -50,7 +50,6 @@ function startGame() {
 
       roundManager.start(io, currentRoom, users)
       currentRoom = generateRoomName()
-      io.emit('lobbyUpdate', users.names())
     }
   }, START_GAME_DELAY * ONE_SECOND + DELAY_BUFFER_IN_MS)
   io.to(currentRoom).emit('countdown', START_GAME_DELAY)
@@ -129,7 +128,7 @@ function handleSocketConnection(socket) {
   socket.on('vote', function tallyVote(vote) {
     if (roundManager.state === 'vote') {
       users.vote(vote)
-      votesNeeded -= 1
+      votesNeeded--
       if (votesNeeded === 0) {
         votesNeeded = playerCount
         roundManager.nextRound(users)

@@ -40,7 +40,7 @@ module.exports = {
   },
 
   nextRound(users) {
-    round += 1
+    round++
     if (round <= NUM_ROUNDS) {
       this.startChat(users)
     } else {
@@ -54,28 +54,26 @@ module.exports = {
   },
 
   continueChat(users) {
-    const randomPlayer = clientsLeft[Math.floor(Math.random() * clientsLeft.length)]
-    activePlayerID = randomPlayer
-    if (activePlayerID !== undefined) {
-      activePlayer = users.getNameFromID(activePlayerID)
-    } else {
-      activePlayer = undefined
-    }
-    allClients.forEach(clientId => {
-      const client = io.sockets.connected[clientId]
-      if (clientId === randomPlayer) {
-        state = 'chat'
-        client.emit('progressGame', 'chat', round, activePlayer)
-      } else {
-        if (clientsLeft.includes(clientId)) {
-          client.emit('progressGame', 'wait', round, activePlayer)
-        } else {
-          // Done for the round.
-          client.emit('progressGame', 'done', round, activePlayer)
-        }
-      }
-    })
     if (clientsLeft.length !== 0) {
+      const randomPlayer = clientsLeft[Math.floor(Math.random() * clientsLeft.length)]
+      activePlayerID = randomPlayer
+      activePlayer = users.getNameFromID(activePlayerID)
+
+      allClients.forEach(clientId => {
+        const client = io.sockets.connected[clientId]
+        if (clientId === randomPlayer) {
+          state = 'chat'
+          client.emit('progressGame', 'chat', round, activePlayer)
+        } else {
+          if (clientsLeft.includes(clientId)) {
+            client.emit('progressGame', 'wait', round, activePlayer)
+          } else {
+            // Done for the round.
+            client.emit('progressGame', 'done', round, activePlayer)
+          }
+        }
+      })
+
       const lastChatterIndex = clientsLeft.indexOf(randomPlayer)
       clientsLeft.splice(lastChatterIndex, 1)
     } else {
