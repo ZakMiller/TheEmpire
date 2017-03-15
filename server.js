@@ -22,7 +22,7 @@ const ONE_SECOND = 1000
 const DELAY_BUFFER_IN_MS = 200
 const STARTING_REQUIRED_WORD_COUNT = 10
 const REQUIRED_SENTENCE_LENGTH = 10
-const REQUIRED_KEYWORD_COUNT = 3
+const REQUIRED_KEYWORD_COUNT = 5
 
 const EXTRA_VALID_WORDS_REGEXP = /^[ai]$/
 
@@ -31,7 +31,7 @@ let countDownTimer = null
 let votesNeeded
 let playerCount
 
-httpServer.listen(80)
+httpServer.listen(process.env.PORT || 80)
 
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -106,7 +106,8 @@ function handleSocketConnection(socket) {
   socket.on('message', function messageHandler({
     message
   }, cb) {
-    if (sentenceIsValid(message, socket.wordList) && socket.id === roundManager.activePlayerID) {
+    const errorMsg = socket.id === roundManager.activePlayerID ? validateSentence(message, socket.wordList) : 'Cannot submit until your turn'
+    if (!errorMsg) {
       cb(null)
       io.to(socket.gameRoom).emit('message', {
         name: socket.username,
@@ -116,13 +117,16 @@ function handleSocketConnection(socket) {
       socket.emit('assignWords', assignWordListFor(socket))
       roundManager.continueChat(users)
     } else {
-      cb('Invalid Sentence')
+      cb(errorMsg)
     }
   })
 
-  socket.on('spellCheck', function spellChecker(word, cb) {
-    word = word.toLowerCase()
-    cb(EXTRA_VALID_WORDS_REGEXP.test(word) || dictionary.check(word))
+  socket.on('spellcheck', function spellChecker(words, cb) {
+    const spelledCorrectly = []
+    words.forEach((word, i) => {
+      spelledCorrectly[i] = wordIsValid(word)
+    })
+    cb(spelledCorrectly)
   })
 
   socket.on('vote', function tallyVote(vote) {
@@ -144,10 +148,15 @@ function handleSocketConnection(socket) {
   })
 }
 
-function sentenceIsValid(sentence, wordList = []) {
+function wordIsValid(word) {
+  word = word.toLowerCase()
+  return EXTRA_VALID_WORDS_REGEXP.test(word) || dictionary.check(word)
+}
+
+function validateSentence(sentence, wordList = []) {
   const words = sentence.split(' ')
   if (words.length !== REQUIRED_SENTENCE_LENGTH) {
-    return false
+    return `Sentence must be ${REQUIRED_SENTENCE_LENGTH} words long`
   }
 
   const wordSet = new Set()
@@ -155,7 +164,9 @@ function sentenceIsValid(sentence, wordList = []) {
   for (let i = 0; i !== words.length; ++i) {
     const currentWord = words[i]
     if (wordSet.has(currentWord)) {
-      return false
+      return `'${currentWord}' was used more than once`
+    } else if (!wordIsValid(currentWord)) {
+      return `'${currentWord}' is not a valid word`
     } else {
       wordSet.add(currentWord)
       if (wordList.includes(currentWord)) {
@@ -164,7 +175,11 @@ function sentenceIsValid(sentence, wordList = []) {
     }
   }
 
-  return !wordList.length || keywordCount >= REQUIRED_KEYWORD_COUNT
+  if (wordList.length && keywordCount < REQUIRED_KEYWORD_COUNT) {
+    return `AI must use at least ${REQUIRED_KEYWORD_COUNT} keywords`
+  }
+  // if passes all checks, return null error message
+  return null
 }
 
 function assignWordListFor(socket) {

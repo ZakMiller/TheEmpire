@@ -95,7 +95,7 @@ input {
   color: red;
 }
 
-#customInput {
+#sentenceBuilder {
   width: 100%;
   height: 100%;
   font-size: 15px;
@@ -108,10 +108,6 @@ input {
 .words {
   display: inline;
   list-style-type: none;
-}
-
-.word {
-  display: inline;
 }
 
 .cursor {
@@ -129,12 +125,21 @@ input {
   }
 }
 
+.word {
+  color: black;
+}
+
 .keyword {
   color: gold;
 }
 
 .error {
   color: red;
+}
+
+.duplicate {
+  color: white;
+  text-decoration: underline;
 }
 
 .prompt {
