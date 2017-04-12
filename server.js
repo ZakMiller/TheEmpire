@@ -68,9 +68,11 @@ function assignRoles(currentRoom) {
       const client = io.sockets.connected[clientId]
       if (clientId === humanID) {
         client.emit('setRole', 'human')
+        client.role = 'human'
         client.emit('assignWords', [])
       } else {
         client.emit('setRole', 'AI')
+        client.role = 'AI'
         client.wordList = []
         client.emit('assignWords', assignWordListFor(client))
       }
@@ -85,6 +87,9 @@ function handleSocketConnection(socket) {
   socket.on('register', function register(username, cb) {
     if (!username) {
       return cb('username must not be empty')
+    }
+    if (username.toLowerCase().includes('judge')) {
+      return cb("username cannot include 'judge'")
     }
     if (users.has(username)) {
       return cb('username taken')
@@ -136,7 +141,11 @@ function handleSocketConnection(socket) {
       if (votesNeeded === 0) {
         votesNeeded = playerCount
         roundManager.nextRound(users)
+        if (roundManager.state === 'end') {
+          endGame()
+        }
       }
+      console.log(`Vote cast for <${vote}>`)
     }
   })
 
@@ -189,5 +198,16 @@ function assignWordListFor(socket) {
     return wordList
   } else {
     return []
+  }
+}
+
+function endGame() {
+  const winner = users.getMostVoted()
+  const role = io.sockets.connected[users.getId(winner)]
+  console.log(`client's role ${role}`)
+  if (role === 'AI') {
+    roundManager.endGame('AI')
+  } else {
+    roundManager.endGame('human')
   }
 }

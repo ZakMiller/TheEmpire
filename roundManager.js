@@ -1,26 +1,30 @@
 'use strict'
 
+const questions = require('./questions')
+
 let io
 
 const NUM_ROUNDS = 5
 let round = 0
 let allClients
+let room
 let clientsLeft
 let activePlayerID
 let activePlayer
 let state
 
-const questions = require('./questions')
-
 module.exports = {
   get activePlayerID() {
     return activePlayerID
   },
+
   get state() {
     return state
   },
-  start(ioIn, room, users) {
+
+  start(ioIn, roomIn, users) {
     io = ioIn
+    room = roomIn
     io.in(room).clients((err, clients) => {
       if (err) {
         throw err
@@ -35,17 +39,23 @@ module.exports = {
     if (round <= NUM_ROUNDS) {
       this.startChat(users)
     } else {
-      this.endGame()
+      state = 'end'
     }
   },
 
   sendJudgeQuestion() {
-    const message = questions.getQuestion()
+    const question = questions.getQuestion()
+    let messageToSend
     allClients.forEach(clientId => {
       const client = io.sockets.connected[clientId]
+      if (client.role === 'human') {
+        messageToSend = getRandomBitString()
+      } else {
+        messageToSend = question
+      }
       client.emit('message', {
         name: 'The Judge',
-        message: message
+        message: messageToSend
       }, function handleValidationError(err) {
         if (err) {
           alert(err) // TODO better warning
@@ -84,22 +94,35 @@ module.exports = {
       const lastChatterIndex = clientsLeft.indexOf(randomPlayer)
       clientsLeft.splice(lastChatterIndex, 1)
     } else {
+      io.to(room).emit('progressGame', 'done', round)
       this.startVote()
     }
   },
 
   startVote() {
     allClients.forEach(clientId => {
-      const client = io.sockets.connected[clientId]
       state = 'vote'
+      const client = io.sockets.connected[clientId]
       client.emit('progressGame', 'vote', round, activePlayer)
     })
   },
 
-  endGame() {
+  endGame(winningTeam) {
     allClients.forEach(clientId => {
       const client = io.sockets.connected[clientId]
-      client.emit('progressGame', 'end', round, activePlayer)
+      client.emit('progressGame', 'end', round, activePlayer, winningTeam)
     })
   }
+}
+
+function getRandomBitString() {
+  let str = ''
+  const length = 80 + Math.floor(Math.random() * 20)
+  for (let i = 0; i !== length; ++i) {
+    str += Math.floor(Math.random() * 2)
+    if (Math.random() < 0.10) {
+      str += ' '
+    }
+  }
+  return str
 }

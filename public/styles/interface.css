@@ -21,8 +21,16 @@ hr {
   padding: 0;
 }
 
-#countdownBanner {
+.clearRight {
+  clear: right;
+}
+
+.timer {
   color: gold;
+}
+
+#gameTimer {
+  float: right;
 }
 
 footer {
@@ -154,6 +162,10 @@ input {
 
 input:focus {
   outline: none;
+}
+
+input[type="radio"]:checked+label {
+  color: gold;
 }
 
 .pulse {
