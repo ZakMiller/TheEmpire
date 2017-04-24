@@ -30,6 +30,9 @@ function appendIncomingMessage(newMessage) {
     socket.emit('vote', newMessage.name)
   }
   messages.appendChild(item)
+  if (newMessage.name === 'The Judge') {
+    item.className += 'judgeMessage'
+  }
 }
 
 function setRole(roleName) {

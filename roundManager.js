@@ -10,6 +10,8 @@ let activePlayerID
 let activePlayer
 let state
 
+const questions = require('./questions')
+
 module.exports = {
   get activePlayerID() {
     return activePlayerID
@@ -37,8 +39,24 @@ module.exports = {
     }
   },
 
+  sendJudgeQuestion() {
+    const message = questions.getQuestion()
+    allClients.forEach(clientId => {
+      const client = io.sockets.connected[clientId]
+      client.emit('message', {
+        name: 'The Judge',
+        message: message
+      }, function handleValidationError(err) {
+        if (err) {
+          alert(err) // TODO better warning
+        }
+      })
+    })
+  },
+
   startChat(users) {
     clientsLeft = allClients.slice(0)
+    this.sendJudgeQuestion()
     this.continueChat(users)
   },
 
