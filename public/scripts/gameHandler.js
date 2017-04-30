@@ -7,6 +7,7 @@ const requiredWords = require('./requiredWords')
 
 const roles = require('./roles')
 const input = require('./sentenceBuilder')
+const customAlert = require('./alert')
 
 const game = document.querySelector('#game')
 const image = document.querySelector('#image')
@@ -79,13 +80,13 @@ function progressGame(newJob, roundCount, activePlayer, winner) {
       wordCounter.hidden = false
       customInput.hidden = false
       requiredWordsList.hidden = false
-      alert('your turn!')
+      customAlert('your turn!')
       break
     case 'wait':
       wordCounter.hidden = false
       customInput.hidden = false
       requiredWordsList.hidden = false
-      alert(activePlayer + "'s turn")
+      customAlert(activePlayer + "'s turn")
       break
     case 'vote':
       startVoteCountDown(VOTE_TIMER)
@@ -96,7 +97,7 @@ function progressGame(newJob, roundCount, activePlayer, winner) {
       requiredWordsList.hidden = true
       break
     case 'end':
-      alert(`TEAM <${winner.toUpperCase()}> WON!!!!`)
+      customAlert(`TEAM <${winner.toUpperCase()}> WON!!!!`)
       break
   }
 }
@@ -126,11 +127,11 @@ function vote() {
   const nameRegex = /<(.*)>/
   const message = (document.querySelector('input[type="radio"]:checked+label') || {}).textContent
   if (!message) {
-    alert('YOU FAILED TO VOTE')
+    customAlert('YOU FAILED TO VOTE')
     socket.emit('vote', null)
   } else {
     const [, nameVotedFor] = message.match(nameRegex) || [] // 1st capture group will be 2nd elem, if found
-    alert(`You voted for <${nameVotedFor}>`)
+    customAlert(`You voted for <${nameVotedFor}>`)
     socket.emit('vote', nameVotedFor)
   }
 

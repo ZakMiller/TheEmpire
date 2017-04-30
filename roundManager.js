@@ -58,7 +58,7 @@ module.exports = {
         message: messageToSend
       }, function handleValidationError(err) {
         if (err) {
-          alert(err) // TODO better warning
+          console.log(err)
         }
       })
     })

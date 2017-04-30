@@ -3,7 +3,7 @@
 const {
   socket
 } = require('./shared')
-
+const customAlert = require('./alert')
 const body = document.querySelector('body')
 const wordCounter = document.querySelector('#wordCounter')
 const requiredWordCounter = document.querySelector('#requiredWordCounter')
@@ -323,18 +323,20 @@ function handleEnter() {
     message: sentence.trim()
   }, function handleValidationError(err) {
     if (err) {
-      alert(err) // TODO better warning
+      const isError = true
+      customAlert(err, isError)
     } else {
       resetWords()
     }
   })
 }
 
-// TODO add visual alert in to hud in future
 function handleBadKeystrokes() {
   event.preventDefault()
   errorSound.currentTime = 0
   errorSound.play()
+  const isError = true
+  customAlert('Invalid input!', isError)
 }
 
 module.exports = {

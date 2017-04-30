@@ -4,7 +4,7 @@ const {
   socket,
   keyListener
 } = require('./shared')
-
+const customAlert = require('./alert')
 const ONE_SECOND = 1000
 
 let myUsername
@@ -33,7 +33,8 @@ function register() {
   myUsername = document.querySelector('#nameInput').value
   socket.emit('register', myUsername, function handleRegisterError(err) {
     if (err) {
-      alert(JSON.stringify(err)) // TODO: show error more elegantly
+      const isError = true
+      customAlert(JSON.stringify(err), isError)
     } else {
       registration.hidden = true
       lobby.hidden = false

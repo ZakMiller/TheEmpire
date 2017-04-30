@@ -5,6 +5,7 @@ const {
   addListItem,
   addListItemAsPenultimateChild
 } = require('./shared')
+const customAlert = require('./alert')
 
 const body = document.querySelector('body')
 const wordCounter = document.querySelector('#wordCounter')
@@ -147,18 +148,21 @@ function handleEnter() {
   }
 
   if (containsErrors) {
-    alert(`sentence has too many errors!`) // TODO better warning
+    const isError = true
+    customAlert(`sentence has too many errors!`, isError)
     return
   }
 
   if (wordArray.length !== WORD_COUNT) {
-    alert(`sentence must be ${WORD_COUNT} words long`) // TODO better warning
+    const isError = true
+    customAlert(`sentence must be ${WORD_COUNT} words long`, isError)
     return
   }
 
   // check for the min number of required keyword, if applicable
   if (RANDOM_WORDS.length && keywordCount < REQUIRED_KEYWORD_COUNT) {
-    alert(`sentence must include ${REQUIRED_KEYWORD_COUNT} required words`) // TODO better warning
+    const isError = true
+    customAlert(`sentence must include ${REQUIRED_KEYWORD_COUNT} required words`, isError)
     return
   }
 
@@ -166,7 +170,8 @@ function handleEnter() {
     message: wordArray.join(' ')
   }, function handleValidationError(err) {
     if (err) {
-      alert(err) // TODO better warning
+      const isError = true
+      customAlert(err, isError)
     } else {
       resetWords()
       wordSet.clear()
@@ -178,6 +183,8 @@ function handleEnter() {
 function handleBadKeystrokes() {
   errorSound.currentTime = 0
   errorSound.play()
+  const isError = true
+  customAlert('Invalid character!', isError)
 }
 
 module.exports = {
