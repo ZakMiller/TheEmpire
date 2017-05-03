@@ -6,6 +6,7 @@ const ONE_SECOND = 1000
 
 module.exports =
   function alert(message, error = false, delayInSeconds = 5) {
+    clearTimeout(timeoutReference)
     if (delayInSeconds > 0) {
       if (error) {
         notifications.style.color = 'red'
@@ -17,6 +18,6 @@ module.exports =
 
       timeoutReference = setTimeout(() => {
         notifications.style.display = 'none'
-      }, ONE_SECOND)
+      }, ONE_SECOND * delayInSeconds)
     }
   }
