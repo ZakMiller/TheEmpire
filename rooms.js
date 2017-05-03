@@ -11,7 +11,7 @@ function generateRandomChar() {
 }
 
 module.exports = {
-  generateRoomName(length = 4) {
+  generateRoomName(length = 8) {
     let name
     do {
       name = ''

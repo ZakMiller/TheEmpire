@@ -7,14 +7,16 @@ const httpServer = require('http').createServer(app)
 const io = require('socket.io')(httpServer)
 const dictionary = require('check-word')('en')
 
-const users = require('./users')
+const Users = require('./users')
+let users = new Users()
 const {
   generateWords
 } = require('./randomWords')
 const {
   generateRoomName
 } = require('./rooms')
-const roundManager = require('./roundManager')
+const RoundManager = require('./roundManager')
+let roundManager
 
 const MIN_PLAYER_COUNT = 3
 const START_GAME_DELAY = 5 // sec
@@ -48,7 +50,8 @@ function startGame() {
 
       assignRoles(currentRoom)
 
-      roundManager.start(io, currentRoom, users)
+      roundManager = new RoundManager(io, currentRoom, users)
+      users = new Users()
       currentRoom = generateRoomName()
     }
   }, START_GAME_DELAY * ONE_SECOND + DELAY_BUFFER_IN_MS)
